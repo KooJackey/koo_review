@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pknu.main.dao.MainDao">
+
+	
+	<select id="searchTitle" parameterType="String" resultType="BBSDto">
+	SELECT *
+	FROM WEIVER_FOOD
+	WHERE WEIVER_TITLE LIKE #{target}
+	UNION ALL
+	SELECT *
+	FROM WEIVER_CAR
+	WHERE WEIVER_TITLE LIKE #{target}
+	</select>
+	
+	<select id="getCategory" resultType="categoryDto">
+		SELECT CATEGORY_NAME, CATEGORY_REALNAME FROM CATEGORY
+	</select>
+	
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pknu.member.dao.MemberDao">
+
+	
+	<insert id="insertMember" parameterType="memberDto">
+		INSERT INTO MEMBER
+		VALUES(member_seq.nextval, #{member_id}, #{member_pw}, #{member_name}, #{member_email}, #{member_sex}, #{member_birth}, sysdate, 0, #{member_memo}, null, null, null, null)
+	</insert>
+	
+	<select id="selectPassword" parameterType="string" resultType="string">
+		SELECT MEMBER_PW
+		FROM MEMBER
+		WHERE MEMBER_ID = #{id}
+	</select>
+	
+	<select id="selectId" parameterType="string" resultType="string">
+		SELECT MEMBER_ID 
+		FROM MEMBER
+		WHERE MEMBER_ID = #{inputId}
+	</select>
+	
+	<select id="userProfile" parameterType="String" resultType="memberDto">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_ID=#{id}
+	</select>
+	
+	<update id="profileUpdate" parameterType="memberDto">
+		UPDATE MEMBER
+		SET 
+<!-- 		<if test="#{member_pw}!='null'"> -->
+		member_pw = #{member_pw},
+<!-- 		</if> -->
+		member_nickname = #{member_nickname},
+		member_phonenumber = #{member_phonenumber}, member_email = #{member_email},
+		member_birth = #{member_birth}, member_memo = #{member_memo}
+		WHERE MEMBER_ID = #{member_id}
+		
+	
+	</update>
+
+
+	<select id="getCategory" resultType="categoryDto">
+		SELECT CATEGORY_NAME, CATEGORY_REALNAME FROM CATEGORY
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

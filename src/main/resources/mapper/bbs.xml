@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pknu.bbs.dao.BBSDao">
+
+	<select id="getArticleCount" resultType="int">
+		SELECT COUNT(*) FROM WEIVER_CAR
+	</select>	
+	
+	<select id="getArticles" parameterType="getListDto" resultType="BBSDto">
+		SELECT * 
+		FROM (SELECT ROWNUM RM, WEIVER.* FROM (SELECT *
+												FROM ${tableName}
+												ORDER BY weiver_no DESC)WEIVER)
+		WHERE RM BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<select id="getTarget" parameterType="getListDto" resultType="BBSDto">
+		SELECT * 
+		FROM (SELECT ROWNUM RM, WEIVER.* FROM (SELECT *
+												FROM ${tableName}
+												ORDER BY weiver_no DESC)WEIVER)
+		WHERE RM BETWEEN #{startRow} AND #{endRow} AND WEIVER_TITLE LIKE #{target}
+	</select>
+	
+	
+	
+	<select id="getTableName" parameterType="String" resultType="String">
+		SELECT TABLENAME 
+		FROM CATEGORY 
+		WHERE CATEGORY_NAME = #{whatPage}
+	</select>
+	
+<!-- 	조회수 -->
+	<update id="hitUp" parameterType="java.util.HashMap">
+		UPDATE WEIVER_CAR 
+		SET WEIVER_HIT=WEIVER_HIT+1 
+		WHERE WEIVER_NO=#{weiver_no}
+	</update>
+	
+<!-- 	글 읽기 -->
+	<select id="readCar" parameterType="String" resultType="BBSDto">
+		SELECT * 
+		FROM WEIVER_CAR
+		WHERE WEIVER_NO = #{weiver_no}
+	</select>
+	<select id="getFiles" parameterType="String" resultType="fileDto">
+		SELECT *
+		FROM FILELIST
+		WHERE WEIVER_NO = #{weiver_no}
+	</select>
+	
+<!-- 	글 쓰기 -->
+	<insert id="insertArticle" parameterType="BBSDto">
+		INSERT INTO WEIVER_CAR values(
+		weiver_no_seq.nextval, #{weiver_id}, #{weiver_title}, #{weiver_content}, sysdate, 0, 0, 0, 0)
+	</insert>
+	<select id="getNextArticleNum" resultType="int">
+		SELECT weiver_no_seq.nextval FROM DUAL
+	</select>
+	<insert id="insertFile" parameterType="fileDto">
+		INSERT INTO FILELIST
+		values(file_seq.nextval, #{originFname}, #{storedFname}, #{fileLength}, #{articleNum})
+	</insert>
+<!-- 	글삭제 -->
+	<delete id="deleteArticle" parameterType="String">
+		DELETE
+		FROM WEIVER_CAR
+		WHERE WEIVER_NO = #{weiver_no}
+	</delete>
+<!-- 	글 수정 -->
+	<select id="getUpdateArticle" parameterType="String" resultType="BBSDto">
+		SELECT *
+		FROM WEIVER_CAR
+		WHERE WEIVER_NO=#{weiver_no}
+	</select>
+	<select id="updateArticle" parameterType="BBSDto">
+		update WEIVER_CAR
+		set weiver_title=#{weiver_title}, weiver_content=#{weiver_content}, weiver_file=0
+		where weiver_no=#{weiver_no}
+	</select>
+	<select id="getCategory" resultType="categoryDto">
+		SELECT CATEGORY_NAME, CATEGORY_REALNAME FROM CATEGORY
+	</select>
+	
+</mapper>
